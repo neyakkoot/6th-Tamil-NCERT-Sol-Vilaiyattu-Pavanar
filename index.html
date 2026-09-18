@@ -1,1 +1,720 @@
-11
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ஜிலேபி தமிழ் - சொல் வேட்டை</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --jalebi-orange: #ff9d00;
+    --jalebi-pink: #ff3d71;
+    --jalebi-purple: #7b2cbf;
+    --jalebi-blue: #3498db;
+    --jalebi-green: #2ecc71;
+    --jalebi-dark: #1a1a2e;
+    --jalebi-panel: #16213e;
+    --jalebi-light: #f0f0f0;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Noto Sans Tamil', sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #eee;
+    min-height: 100vh;
+    padding: 10px;
+    overflow-x: hidden;
+  }
+
+  .hidden { display: none !important; }
+
+  /* ---------- பொது பாணி ---------- */
+  .screen {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: var(--jalebi-panel);
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  }
+
+  h1, h2, h3 {
+    font-family: 'Oswald', sans-serif;
+    text-align: center;
+    letter-spacing: 1px;
+    margin: 10px 0;
+  }
+
+  h1 { color: var(--jalebi-orange); font-size: 1.8rem; }
+  h2 { color: var(--jalebi-pink); font-size: 1.5rem; }
+
+  /* ---------- பொத்தான்கள் ---------- */
+  button {
+    background: linear-gradient(135deg, var(--jalebi-orange), var(--jalebi-pink));
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: 'Noto Sans Tamil', sans-serif;
+    box-shadow: 0 5px 15px rgba(255, 61, 113, 0.4);
+    width: 100%;
+    margin: 10px 0;
+  }
+  button:active { transform: scale(0.96); }
+  button:hover { box-shadow: 0 8px 25px rgba(255, 61, 113, 0.6); }
+
+  button.secondary {
+    background: linear-gradient(135deg, #4a4a6a, #2a2a4a);
+    box-shadow: none;
+  }
+
+  /* ---------- முகப்புத் திரை ---------- */
+  #home-screen .logo {
+    text-align: center;
+    font-size: 4rem;
+    margin-bottom: 10px;
+    animation: spin 3s linear infinite;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  #home-screen .subtitle {
+    text-align: center;
+    color: #aaa;
+    margin-bottom: 30px;
+    font-size: 0.95rem;
+  }
+
+  /* ---------- நிலைத் தேர்வு ---------- */
+  .difficulty-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 20px 0;
+  }
+  .difficulty-options button {
+    background: linear-gradient(135deg, #2a2a4a, #1a1a3a);
+    border: 2px solid transparent;
+    padding: 15px 10px;
+    font-size: 0.9rem;
+  }
+  .difficulty-options button.active {
+    border-color: var(--jalebi-orange);
+    background: linear-gradient(135deg, var(--jalebi-purple), var(--jalebi-blue));
+    box-shadow: 0 0 20px rgba(255, 157, 0, 0.5);
+  }
+
+  /* ---------- பாடத் தேர்வு ---------- */
+  #lesson-select {
+    width: 100%;
+    padding: 15px;
+    background: #0f1626;
+    color: white;
+    border: 2px solid var(--jalebi-purple);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: 'Noto Sans Tamil', sans-serif;
+    margin-bottom: 15px;
+  }
+
+  /* ---------- விளையாட்டுத் திரை ---------- */
+  .game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    font-size: 0.85rem;
+  }
+  .game-header .score { color: var(--jalebi-orange); font-weight: bold; }
+  .game-header .timer { color: var(--jalebi-pink); font-weight: bold; }
+
+  /* ---------- எழுத்துக் கட்டம் ---------- */
+  #grid-container {
+    display: grid;
+    gap: 3px;
+    margin: 15px auto;
+    max-width: 100%;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .grid-cell {
+    background: linear-gradient(135deg, #2a2a4a, #1f1f3a);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    color: #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+    aspect-ratio: 1 / 1;
+    font-size: 1rem;
+  }
+  .grid-cell:hover { background: #3a3a5a; }
+  .grid-cell.selected {
+    background: linear-gradient(135deg, var(--jalebi-orange), var(--jalebi-pink));
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 157, 0, 0.7);
+  }
+  .grid-cell.found {
+    background: linear-gradient(135deg, var(--jalebi-green), #1abc9c);
+    color: white;
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
+  }
+
+  /* ---------- சொல் பட்டியல் ---------- */
+  #word-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 15px;
+    padding: 15px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    min-height: 60px;
+  }
+
+  .word-chip {
+    padding: 8px 14px;
+    background: linear-gradient(135deg, #2a2a4a, #1f1f3a);
+    border: 2px solid var(--jalebi-purple);
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+  .word-chip.found {
+    background: linear-gradient(135deg, var(--jalebi-green), #1abc9c);
+    border-color: var(--jalebi-green);
+    text-decoration: line-through;
+    color: white;
+    transform: scale(1.05);
+  }
+
+  /* ---------- வெற்றி/தோல்வித் திரை ---------- */
+  #result-screen {
+    text-align: center;
+  }
+  .result-emoji { font-size: 5rem; margin: 20px 0; }
+  .result-title { font-size: 1.8rem; color: var(--jalebi-orange); margin: 15px 0; }
+  .result-stats {
+    background: rgba(0,0,0,0.3);
+    padding: 20px;
+    border-radius: 15px;
+    margin: 20px 0;
+  }
+  .result-stats div {
+    margin: 10px 0;
+    font-size: 1.1rem;
+  }
+  .result-stats strong { color: var(--jalebi-orange); }
+
+  /* ---------- மொபைல் சிறிய திரை ---------- */
+  @media (max-width: 480px) {
+    .grid-cell { font-size: 0.85rem; }
+    h1 { font-size: 1.4rem; }
+    h2 { font-size: 1.2rem; }
+    .screen { padding: 15px; margin: 10px auto; }
+  }
+
+  /* ---------- அனிமேஷன் ---------- */
+  @keyframes pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .pop-in { animation: pop 0.4s ease-out; }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+  .shake { animation: shake 0.3s ease-in-out; }
+</style>
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- 1. முகப்புத் திரை -->
+<!-- ============================================ -->
+<div id="home-screen" class="screen">
+  <div class="logo">🍥</div>
+  <h1>ஜிலேபி தமிழ்</h1>
+  <p class="subtitle">சொல் வேட்டை விளையாட்டு</p>
+  <p class="subtitle">பாவாணர் 6ம் வகுப்பு தமிழ்</p>
+
+  <h3>🎯 கடினத் தன்மையைத் தேர்ந்தெடு</h3>
+  <div class="difficulty-options" id="difficulty-options">
+    <button data-size="7" class="active">😊 எளிது (7×7)</button>
+    <button data-size="8">🙂 நடுத்தரம் (8×8)</button>
+    <button data-size="9">😐 கடினம் (9×9)</button>
+    <button data-size="10">😰 மிக கடினம் (10×10)</button>
+  </div>
+
+  <h3>📖 பாடத்தைத் தேர்ந்தெடு</h3>
+  <select id="lesson-select">
+    <option value="1">இயல் 1: உயிர் எழுத்துகள்</option>
+    <option value="2">இயல் 2: மெய்யெழுத்துகள்</option>
+    <option value="3">இயல் 3: உயிர்மெய் (க-னீ)</option>
+    <option value="4">இயல் 4: உயிர்மெய் (கு-னே)</option>
+    <option value="5">இயல் 5: உயிர்மெய் (கை-கௌ)</option>
+    <option value="6">இயல் 6: நல்ல பழக்கவழக்கங்கள்</option>
+    <option value="7">இயல் 7: விலங்குகளும் பறவைகளும்</option>
+    <option value="8">இயல் 8: பூக்கள், பழங்கள், காய்கள்</option>
+    <option value="9">இயல் 9: உறவுகள்</option>
+    <option value="10">இயல் 10: நாள்கள் - மாதங்கள் - திசைகள்</option>
+    <option value="11">இயல் 11: நம் உடல்</option>
+    <option value="12">இயல் 12: தொழிலும் பயணமும்</option>
+    <option value="13">இயல் 13: வண்ணங்களும் வடிவங்களும்</option>
+  </select>
+
+  <button id="start-btn">🚀 விளையாட்டைத் தொடங்கு</button>
+</div>
+
+<!-- ============================================ -->
+<!-- 2. விளையாட்டுத் திரை -->
+<!-- ============================================ -->
+<div id="game-screen" class="screen hidden">
+  <div class="game-header">
+    <div class="score">⭐ <span id="score-display">0 / 0</span></div>
+    <div class="timer">⏱️ <span id="timer-display">00:00</span></div>
+    <button id="quit-btn" class="secondary" style="width:auto;padding:8px 15px;font-size:0.8rem;margin:0;">✖</button>
+  </div>
+
+  <div id="grid-container"></div>
+
+  <h3 style="margin-top:15px;">🔍 கண்டுபிடிக்க வேண்டிய சொற்கள்</h3>
+  <div id="word-list"></div>
+
+  <div id="feedback" style="text-align:center;margin-top:10px;color:var(--jalebi-green);font-weight:bold;min-height:24px;"></div>
+</div>
+
+<!-- ============================================ -->
+<!-- 3. வெற்றி திரை -->
+<!-- ============================================ -->
+<div id="result-screen" class="screen hidden">
+  <div class="result-emoji" id="result-emoji">🎉</div>
+  <div class="result-title" id="result-title">வெற்றி!</div>
+  <div class="result-stats">
+    <div>⏱️ நேரம்: <strong id="result-time">00:00</strong></div>
+    <div>🎯 கண்டுபிடித்தவை: <strong id="result-found">0 / 0</strong></div>
+    <div>⭐ மதிப்பெண்: <strong id="result-score">0</strong></div>
+  </div>
+  <button id="play-again-btn">🔄 மீண்டும் விளையாடு</button>
+  <button id="home-btn" class="secondary">🏠 முகப்பு</button>
+</div>
+
+<script>
+/* =========================================================
+   சொல் பட்டியல் - ஒவ்வொரு பாடத்திற்கும்
+   (உங்களது quiz JSON-களில் உள்ள சரியான விடைகள்)
+   ========================================================= */
+const LESSON_WORDS = {
+  1: ["அம்மா", "ஆடு", "இலை", "ஈட்டி", "உப்பு", "ஊஞ்சல்", "எலி", "ஏணி", "ஐந்து", "ஒன்று", "ஓணான்", "ஒளவை"],
+  2: ["சங்கு", "பட்டம்", "நத்தை", "சக்கரம்", "பந்து", "கப்பல்", "மரம்", "மீன்", "கண்", "நண்டு", "செங்கல்", "குழந்தை"],
+  3: ["கண்", "சங்கு", "பணம்", "மயில்", "வயல்", "பள்ளம்", "பறவை", "காலை", "சாலை", "பாட்டி", "கிண்ணம்", "வீடு"],
+  4: ["குரங்கு", "சுவர்", "நாடு", "துண்டு", "புடவை", "யுகம்", "எருமை", "கூண்டு", "தாண்டில்", "நூலகம்", "பூக்கள்", "வாத்து"],
+  5: ["முட்டை", "நத்தை", "குகை", "பூனை", "வீணை", "பானை", "மலை", "கொக்கு", "தொப்பி", "மொட்டு", "கோழி", "தோகை"],
+  6: ["மலர்", "நாய்", "பறவை", "குடை", "மீன்", "மலை", "பூனை", "கிளி", "வீடு", "சுத்தம்", "உண்மை", "மரியாதை"],
+  7: ["சிங்கம்", "புலி", "மான்", "கரடி", "குரங்கு", "நரி", "யானை", "மயில்", "கிளி", "காகம்", "பருந்து", "கோழி"],
+  8: ["ரோஜா", "சாமந்தி", "மல்லிகை", "தாமரை", "அல்லி", "மாம்பழம்", "வாழைப்பழம்", "திராட்சை", "தர்ப்பூசணி", "கேரட்", "தக்காளி", "மிளகாய்"],
+  9: ["அப்பா", "அம்மா", "தாத்தா", "பாட்டி", "அண்ணன்", "அக்கா", "தம்பி", "தங்கை", "மாமா", "அத்தை", "மகன்", "மகள்"],
+  10: ["கிழக்கு", "மேற்கு", "வடக்கு", "தெற்கு", "ஞாயிறு", "திங்கள்", "செவ்வாய்", "புதன்", "வியாழன்", "வெள்ளி", "சனி", "மாதம்"],
+  11: ["கண்", "காது", "மூக்கு", "வாய்", "கை", "கால்", "தலை", "வயிறு", "தோல்", "பல்", "நாக்கு", "விரல்"],
+  12: ["பேருந்து", "சரக்குந்து", "மகிழுந்து", "வானூர்தி", "மிதிவண்டி", "படகு", "கப்பல்", "தொடர்வண்டி", "மருத்துவர்", "காவலர்", "உழவர்", "தச்சர்"],
+  13: ["சிவப்பு", "மஞ்சள்", "பச்சை", "நீலம்", "ஊதா", "கருப்பு", "வெள்ளை", "சதுரம்", "வட்டம்", "முக்கோணம்", "செவ்வகம்", "உருளை"]
+};
+
+/* =========================================================
+   விளையாட்டு நிலை (State)
+   ========================================================= */
+let currentGridSize = 7;
+let currentLesson = 1;
+let grid = [];
+let placedWords = [];
+let foundWords = [];
+let selectedCells = [];
+let isSelecting = false;
+let score = 0;
+let startTime = 0;
+let timerInterval = null;
+let allWords = [];
+
+/* =========================================================
+   உதவிச் சார்புகள் (Helpers)
+   ========================================================= */
+const $ = id => document.getElementById(id);
+const gridContainer = $('grid-container');
+const wordListEl = $('word-list');
+const feedbackEl = $('feedback');
+
+/* =========================================================
+   விளையாட்டைத் தொடங்குதல்
+   ========================================================= */
+function startGame() {
+  currentGridSize = parseInt(document.querySelector('#difficulty-options button.active').dataset.size);
+  currentLesson = parseInt($('lesson-select').value);
+  allWords = [...LESSON_WORDS[currentLesson]];
+
+  // திரை மாற்றம்
+  $('home-screen').classList.add('hidden');
+  $('game-screen').classList.remove('hidden');
+  $('result-screen').classList.add('hidden');
+
+  // நிலை மீட்டமை
+  grid = [];
+  placedWords = [];
+  foundWords = [];
+  selectedCells = [];
+  score = 0;
+  feedbackEl.textContent = '';
+
+  // கட்டத்தை உருவாக்கு
+  initGrid();
+  placeWords();
+  fillEmptyCells();
+  renderGrid();
+  renderWordList();
+  updateScore();
+  startTimer();
+}
+
+/* =========================================================
+   கட்டத்தை உருவாக்குதல்
+   ========================================================= */
+function initGrid() {
+  grid = Array.from({ length: currentGridSize }, () =>
+    Array(currentGridSize).fill(null)
+  );
+}
+
+/* =========================================================
+   சொற்களை கட்டத்தில் வைத்தல்
+   ========================================================= */
+function placeWords() {
+  // பெரிய சொற்களை முதலில் வை (வெற்றி வாய்ப்பு அதிகம்)
+  const sorted = [...allWords].sort((a, b) => b.length - a.length);
+  const directions = [
+    [0, 1],   // கிடைமட்டம் →
+    [1, 0],   // செங்குத்து ↓
+    [1, 1],   // குறுக்கு ↘
+    [-1, 1],  // குறுக்கு ↗
+    [0, -1],  // கிடைமட்டம் ←
+    [-1, 0],  // செங்குத்து ↑
+  ];
+
+  for (const word of sorted) {
+    let placed = false;
+    let attempts = 0;
+    const maxAttempts = 200;
+
+    while (!placed && attempts < maxAttempts) {
+      attempts++;
+      const dir = directions[Math.floor(Math.random() * directions.length)];
+      const [dr, dc] = dir;
+
+      // தொடக்க நிலையைக் கணக்கிடு
+      const maxRow = currentGridSize - (dr > 0 ? word.length : 1);
+      const minRow = dr < 0 ? word.length - 1 : 0;
+      const maxCol = currentGridSize - (dc > 0 ? word.length : 1);
+      const minCol = dc < 0 ? word.length - 1 : 0;
+
+      const row = minRow + Math.floor(Math.random() * (maxRow - minRow + 1));
+      const col = minCol + Math.floor(Math.random() * (maxCol - minCol + 1));
+
+      if (canPlaceWord(word, row, col, dr, dc)) {
+        placeWordAt(word, row, col, dr, dc);
+        placed = true;
+      }
+    }
+
+    if (!placed) {
+      // வைக்க முடியவில்லை என்றால் தவிர்
+      console.warn('வைக்க முடியவில்லை:', word);
+    }
+  }
+}
+
+/* சொல் குறிப்பிட்ட இடத்தில் வைக்க முடியுமா? */
+function canPlaceWord(word, row, col, dr, dc) {
+  for (let i = 0; i < word.length; i++) {
+    const r = row + dr * i;
+    const c = col + dc * i;
+    if (r < 0 || r >= currentGridSize || c < 0 || c >= currentGridSize) return false;
+    const existing = grid[r][c];
+    if (existing !== null && existing !== word[i]) return false;
+  }
+  return true;
+}
+
+/* சொல்லை வைத்தல் */
+function placeWordAt(word, row, col, dr, dc) {
+  const cells = [];
+  for (let i = 0; i < word.length; i++) {
+    const r = row + dr * i;
+    const c = col + dc * i;
+    grid[r][c] = word[i];
+    cells.push([r, c]);
+  }
+  placedWords.push({ word, cells });
+}
+
+/* =========================================================
+   காலியான இடங்களை நிரப்புதல்
+   ========================================================= */
+function fillEmptyCells() {
+  // தமிழ் எழுத்துகள் - சீரற்ற நிரப்புதலுக்கு
+  const fillChars = 'அஆஇஈஉஊஎஏஐஒஓஒளகசடதபமயரலவழளறனஙஞணநநம'.split('');
+  for (let r = 0; r < currentGridSize; r++) {
+    for (let c = 0; c < currentGridSize; c++) {
+      if (grid[r][c] === null) {
+        grid[r][c] = fillChars[Math.floor(Math.random() * fillChars.length)];
+      }
+    }
+  }
+}
+
+/* =========================================================
+   கட்டத்தைத் திரையில் காட்டுதல்
+   ========================================================= */
+function renderGrid() {
+  gridContainer.innerHTML = '';
+  gridContainer.style.gridTemplateColumns = `repeat(${currentGridSize}, 1fr)`;
+  gridContainer.style.width = `min(95vw, 500px)`;
+  gridContainer.classList.add('pop-in');
+
+  for (let r = 0; r < currentGridSize; r++) {
+    for (let c = 0; c < currentGridSize; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'grid-cell';
+      cell.textContent = grid[r][c];
+      cell.dataset.row = r;
+      cell.dataset.col = c;
+      cell.addEventListener('mousedown', () => onCellDown(r, c));
+      cell.addEventListener('mouseenter', () => onCellEnter(r, c));
+      cell.addEventListener('touchstart', (e) => { e.preventDefault(); onCellDown(r, c); }, { passive: false });
+      cell.addEventListener('touchmove', onTouchMove, { passive: false });
+      gridContainer.appendChild(cell);
+    }
+  }
+
+  document.addEventListener('mouseup', onCellUp);
+  document.addEventListener('touchend', onCellUp);
+}
+
+/* =========================================================
+   சொல் பட்டியலைக் காட்டுதல்
+   ========================================================= */
+function renderWordList() {
+  wordListEl.innerHTML = '';
+  allWords.forEach(word => {
+    const chip = document.createElement('div');
+    chip.className = 'word-chip';
+    chip.textContent = word;
+    chip.dataset.word = word;
+    wordListEl.appendChild(chip);
+  });
+}
+
+/* =========================================================
+   தேர்வு லாஜிக் (Mouse + Touch)
+   ========================================================= */
+function onCellDown(r, c) {
+  isSelecting = true;
+  selectedCells = [[r, c]];
+  updateCellHighlight();
+}
+
+function onCellEnter(r, c) {
+  if (!isSelecting) return;
+  const last = selectedCells[selectedCells.length - 1];
+  if (!last) return;
+
+  // ஒரே வரிசை / நெடுவரிசை / குறுக்கு வரிசை மட்டும்
+  const dr = r - last[0];
+  const dc = c - last[1];
+  if (Math.abs(dr) > 1 || Math.abs(dc) > 1) return;
+
+  // ஏற்கனவே தேர்ந்தெடுக்கப்பட்டதா?
+  if (selectedCells.some(([sr, sc]) => sr === r && sc === c)) return;
+
+  selectedCells.push([r, c]);
+  updateCellHighlight();
+}
+
+function onTouchMove(e) {
+  e.preventDefault();
+  if (!isSelecting) return;
+  const touch = e.touches[0];
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  if (el && el.classList.contains('grid-cell')) {
+    const r = parseInt(el.dataset.row);
+    const c = parseInt(el.dataset.col);
+    onCellEnter(r, c);
+  }
+}
+
+function onCellUp() {
+  if (!isSelecting) return;
+  isSelecting = false;
+  checkSelection();
+  selectedCells = [];
+  updateCellHighlight();
+}
+
+/* செல்களை ஒளிரச் செய்தல் */
+function updateCellHighlight() {
+  document.querySelectorAll('.grid-cell').forEach(el => el.classList.remove('selected'));
+  selectedCells.forEach(([r, c]) => {
+    const el = gridContainer.querySelector(`[data-row="${r}"][data-col="${c}"]`);
+    if (el && !el.classList.contains('found')) el.classList.add('selected');
+  });
+}
+
+/* =========================================================
+   தேர்வைச் சரிபார்த்தல்
+   ========================================================= */
+function checkSelection() {
+  if (selectedCells.length < 2) return;
+
+  // தேர்ந்தெடுக்கப்பட்ட எழுத்துகளைச் சேர்
+  let selectedWord = '';
+  selectedCells.forEach(([r, c]) => { selectedWord += grid[r][c]; });
+
+  // எதிர் திசையிலும் சரிபார்
+  const reversedWord = selectedWord.split('').reverse().join('');
+
+  // ஏற்கனவே கண்டுபிடிக்கப்பட்டதா?
+  const matched = allWords.find(w =>
+    (w === selectedWord || w === reversedWord) && !foundWords.includes(w)
+  );
+
+  if (matched) {
+    // வெற்றி!
+    foundWords.push(matched);
+    score += matched.length * 10;
+
+    // செல்களை "found" ஆக்கு
+    selectedCells.forEach(([r, c]) => {
+      const el = gridContainer.querySelector(`[data-row="${r}"][data-col="${c}"]`);
+      if (el) { el.classList.remove('selected'); el.classList.add('found'); }
+    });
+
+    // சொல் சிப்பை புதுப்பி
+    const chip = wordListEl.querySelector(`[data-word="${matched}"]`);
+    if (chip) chip.classList.add('found');
+
+    feedbackEl.textContent = `✅ "${matched}" சரி! +${matched.length * 10} புள்ளிகள்`;
+    feedbackEl.style.color = 'var(--jalebi-green)';
+    updateScore();
+
+    // அனைத்து சொற்களும் கண்டுபிடிக்கப்பட்டதா?
+    if (foundWords.length === allWords.length) {
+      setTimeout(endGame, 600);
+    }
+  } else if (selectedWord.length >= 2) {
+    feedbackEl.textContent = `❌ தவறு. மீண்டும் முயற்சி செய்!`;
+    feedbackEl.style.color = 'var(--jalebi-pink)';
+  }
+
+  setTimeout(() => { feedbackEl.textContent = ''; }, 2000);
+}
+
+/* =========================================================
+   மதிப்பெண் & நேரம்
+   ========================================================= */
+function updateScore() {
+  $('score-display').textContent = `${foundWords.length} / ${allWords.length}`;
+}
+
+function startTimer() {
+  startTime = Date.now();
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const m = Math.floor(elapsed / 60).toString().padStart(2, '0');
+    const s = (elapsed % 60).toString().padStart(2, '0');
+    $('timer-display').textContent = `${m}:${s}`;
+  }, 1000);
+}
+
+/* =========================================================
+   விளையாட்டு முடிவு
+   ========================================================= */
+function endGame() {
+  clearInterval(timerInterval);
+  const elapsed = Math.floor((Date.now() - startTime) / 1000);
+  const m = Math.floor(elapsed / 60).toString().padStart(2, '0');
+  const s = (elapsed % 60).toString().padStart(2, '0');
+
+  $('game-screen').classList.add('hidden');
+  $('result-screen').classList.remove('hidden');
+
+  const total = allWords.length;
+  const pct = Math.round((foundWords.length / total) * 100);
+
+  let emoji = '🎉', title = 'அற்புதம்!';
+  if (pct === 100) { emoji = '🏆'; title = 'சாதனை! அனைத்தும் சரி!'; }
+  else if (pct >= 75) { emoji = '🎉'; title = 'மிக நன்று!'; }
+  else if (pct >= 50) { emoji = '👏'; title = 'நல்ல முயற்சி!'; }
+  else { emoji = '💪'; title = 'மீண்டும் முயற்சி செய்!'; }
+
+  $('result-emoji').textContent = emoji;
+  $('result-title').textContent = title;
+  $('result-time').textContent = `${m}:${s}`;
+  $('result-found').textContent = `${foundWords.length} / ${total}`;
+  $('result-score').textContent = score;
+}
+
+/* =========================================================
+   நிகழ்வு இணைப்புகள்
+   ========================================================= */
+document.querySelectorAll('#difficulty-options button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#difficulty-options button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+$('start-btn').addEventListener('click', startGame);
+$('play-again-btn').addEventListener('click', () => {
+  $('result-screen').classList.add('hidden');
+  startGame();
+});
+$('home-btn').addEventListener('click', () => {
+  $('result-screen').classList.add('hidden');
+  $('home-screen').classList.remove('hidden');
+  clearInterval(timerInterval);
+});
+$('quit-btn').addEventListener('click', () => {
+  if (confirm('விளையாட்டை விட்டு வெளியேற விரும்புகிறீர்களா?')) {
+    clearInterval(timerInterval);
+    $('game-screen').classList.add('hidden');
+    $('home-screen').classList.remove('hidden');
+  }
+});
+
+/* வெளியே கிளிக் செய்தால் தேர்வு ரத்து */
+document.addEventListener('mouseup', () => {
+  if (isSelecting) onCellUp();
+});
+</script>
+</body>
+</html>
