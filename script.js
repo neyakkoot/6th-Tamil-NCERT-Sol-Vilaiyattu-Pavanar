@@ -1,6 +1,6 @@
 /* =========================================================
    ஜிலேபி தமிழ் - சொல் வேட்டை விளையாட்டு
-   script.js - விளையாட்டின் முழு லாஜிக்
+   script.js - விளையாட்டின் முழு லாஜிக் (Tamil Unicode சரி)
    ========================================================= */
 
 /* =========================================================
@@ -25,6 +25,35 @@ const $ = id => document.getElementById(id);
 const gridContainer = $('grid-container');
 const wordListEl = $('word-list');
 const feedbackEl = $('feedback');
+
+/* =========================================================
+   ✅ புதிய உதவிச் சார்பு: தமிழ் சொல்லை எழுத்துகளாகப் பிரி
+   =========================================================
+   Array.from() Unicode code points-ஐச் சரியாகக் கையாளும்.
+   ஆனால் தமிழில், மெய்யெழுத்துகள் + உயிர்மெய் எழுத்துகள்
+   இரண்டு code points சேர்ந்தவை. எனவே ஒரு custom சார்பு.
+   ========================================================= */
+function splitTamilWord(word) {
+  const chars = [];
+  const codePoints = Array.from(word); // சரியான code point பிரிப்பு
+
+  let i = 0;
+  while (i < codePoints.length) {
+    const current = codePoints[i];
+    const next = codePoints[i + 1];
+
+    // அடுத்த எழுத்து virama (pulli) ் (U+0BCD) ஆக இருந்தால்
+    // இரண்டையும் சேர்த்து ஒரே எழுத்தாகக் கருது
+    if (next === '\u0BCD') {
+      chars.push(current + next);
+      i += 2;
+    } else {
+      chars.push(current);
+      i += 1;
+    }
+  }
+  return chars;
+}
 
 /* =========================================================
    விளையாட்டைத் தொடங்குதல்
@@ -80,6 +109,10 @@ function placeWords() {
   ];
 
   for (const word of sorted) {
+    // ✅ சொல்லை எழுத்துகளாகப் பிரி (Tamil Unicode சரி)
+    const wordChars = splitTamilWord(word);
+    const wordLength = wordChars.length;
+
     let placed = false;
     let attempts = 0;
     const maxAttempts = 300;
@@ -89,16 +122,18 @@ function placeWords() {
       const dir = directions[Math.floor(Math.random() * directions.length)];
       const [dr, dc] = dir;
 
-      const maxRow = currentGridSize - (dr > 0 ? word.length : 1);
-      const minRow = dr < 0 ? word.length - 1 : 0;
-      const maxCol = currentGridSize - (dc > 0 ? word.length : 1);
-      const minCol = dc < 0 ? word.length - 1 : 0;
+      const maxRow = currentGridSize - (dr > 0 ? wordLength : 1);
+      const minRow = dr < 0 ? wordLength - 1 : 0;
+      const maxCol = currentGridSize - (dc > 0 ? wordLength : 1);
+      const minCol = dc < 0 ? wordLength - 1 : 0;
+
+      if (maxRow < minRow || maxCol < minCol) continue;
 
       const row = minRow + Math.floor(Math.random() * (maxRow - minRow + 1));
       const col = minCol + Math.floor(Math.random() * (maxCol - minCol + 1));
 
-      if (canPlaceWord(word, row, col, dr, dc)) {
-        placeWordAt(word, row, col, dr, dc);
+      if (canPlaceWord(wordChars, row, col, dr, dc)) {
+        placeWordAt(word, wordChars, row, col, dr, dc);
         placed = true;
       }
     }
@@ -109,23 +144,31 @@ function placeWords() {
   }
 }
 
-function canPlaceWord(word, row, col, dr, dc) {
-  for (let i = 0; i < word.length; i++) {
+/* சொல் குறிப்பிட்ட இடத்தில் வைக்க முடியுமா? */
+function canPlaceWord(wordChars, row, col, dr, dc) {
+  for (let i = 0; i < wordChars.length; i++) {
     const r = row + dr * i;
     const c = col + dc * i;
-    if (r < 0 || r >= currentGridSize || c < 0 || c >= currentGridSize) return false;
+
+    if (r < 0 || r >= currentGridSize || c < 0 || c >= currentGridSize) {
+      return false;
+    }
+
     const existing = grid[r][c];
-    if (existing !== null && existing !== word[i]) return false;
+    if (existing !== null && existing !== wordChars[i]) {
+      return false;
+    }
   }
   return true;
 }
 
-function placeWordAt(word, row, col, dr, dc) {
+/* சொல்லை கட்டத்தில் வைத்தல் */
+function placeWordAt(word, wordChars, row, col, dr, dc) {
   const cells = [];
-  for (let i = 0; i < word.length; i++) {
+  for (let i = 0; i < wordChars.length; i++) {
     const r = row + dr * i;
     const c = col + dc * i;
-    grid[r][c] = word[i];
+    grid[r][c] = wordChars[i];
     cells.push([r, c]);
   }
   placedWords.push({ word, cells });
@@ -135,7 +178,17 @@ function placeWordAt(word, row, col, dr, dc) {
    காலியான இடங்களை நிரப்புதல்
    ========================================================= */
 function fillEmptyCells() {
-  const fillChars = 'அஆஇஈஉஊஎஏஐஒஓஔகசடதபமயரலவழளறனஙஞணந'.split('');
+  // ✅ தமிழ் உயிர் + மெய் எழுத்துகள் (சரியான Unicode-இல்)
+  const fillChars = [
+    // உயிர் எழுத்துகள் (12)
+    'அ', 'ஆ', 'இ', 'ஈ', 'உ', 'ஊ',
+    'எ', 'ஏ', 'ஐ', 'ஒ', 'ஓ', 'ஔ',
+    // மெய் எழுத்துகள் (18) - சரியான Unicode
+    'க்', 'ங்', 'ச்', 'ஞ்', 'ட்', 'ண்',
+    'த்', 'ந்', 'ப்', 'ம்', 'ய்', 'ர்',
+    'ல்', 'வ்', 'ழ்', 'ள்', 'ற்', 'ன்'
+  ];
+
   for (let r = 0; r < currentGridSize; r++) {
     for (let c = 0; c < currentGridSize; c++) {
       if (grid[r][c] === null) {
@@ -249,13 +302,19 @@ function updateCellHighlight() {
 function checkSelection() {
   if (selectedCells.length < 2) return;
 
+  // ✅ grid-இல் உள்ள எழுத்துகளை இணை (Tamil Unicode-இல்)
   let selectedWord = '';
-  selectedCells.forEach(([r, c]) => { selectedWord += grid[r][c]; });
-  const reversedWord = selectedWord.split('').reverse().join('');
+  selectedCells.forEach(([r, c]) => {
+    selectedWord += grid[r][c];
+  });
 
-  const matched = allWords.find(w =>
-    (w === selectedWord || w === reversedWord) && !foundWords.includes(w)
-  );
+  const reversedWord = Array.from(selectedWord).reverse().join('');
+
+  // ✅ சொல்லையும் splitTamilWord()-ஆல் பிரித்து ஒப்பிடு
+  const matched = allWords.find(w => {
+    if (foundWords.includes(w)) return false;
+    return w === selectedWord || w === reversedWord;
+  });
 
   if (matched) {
     foundWords.push(matched);
@@ -279,7 +338,7 @@ function checkSelection() {
     if (foundWords.length === allWords.length) {
       setTimeout(endGame, 600);
     }
-  } else if (selectedWord.length >= 2) {
+  } else if (selectedWord.length >= 1) {
     feedbackEl.textContent = `❌ தவறு. மீண்டும் முயற்சி செய்!`;
     feedbackEl.style.color = '#ff3d71';
     gridContainer.classList.add('shake');
