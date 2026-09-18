@@ -4,7 +4,7 @@
    ========================================================= */
 
 /* =========================================================
-   1. விளையாட்டு நிலை (State Variables)
+   விளையாட்டு நிலை (State Variables)
    ========================================================= */
 let currentGridSize = 7;
 let currentLesson = 1;
@@ -19,7 +19,7 @@ let timerInterval = null;
 let allWords = [];
 
 /* =========================================================
-   2. DOM குறிப்புகள் (Element References)
+   DOM குறிப்புகள்
    ========================================================= */
 const $ = id => document.getElementById(id);
 const gridContainer = $('grid-container');
@@ -27,15 +27,14 @@ const wordListEl = $('word-list');
 const feedbackEl = $('feedback');
 
 /* =========================================================
-   3. விளையாட்டைத் தொடங்குதல் (Start Game)
+   விளையாட்டைத் தொடங்குதல்
    ========================================================= */
 function startGame() {
-  // தேர்ந்தெடுக்கப்பட்ட கடின நிலை & பாடத்தைப் பெறு
   const activeDiff = document.querySelector('#difficulty-options button.active');
   currentGridSize = activeDiff ? parseInt(activeDiff.dataset.size) : 7;
   currentLesson = parseInt($('lesson-select').value);
 
-  // ✅ words.js-இல் உள்ள getWordsForGame() சார்பைப் பயன்படுத்து
+  // words.js-இல் உள்ள getWordsForGame() சார்பைப் பயன்படுத்து
   allWords = getWordsForGame(currentLesson, currentGridSize);
 
   // திரை மாற்றம்
@@ -62,7 +61,7 @@ function startGame() {
 }
 
 /* =========================================================
-   4. எழுத்துக் கட்டத்தை உருவாக்குதல்
+   எழுத்துக் கட்டத்தை உருவாக்குதல்
    ========================================================= */
 function initGrid() {
   grid = Array.from({ length: currentGridSize }, () =>
@@ -71,18 +70,13 @@ function initGrid() {
 }
 
 /* =========================================================
-   5. சொற்களை கட்டத்தில் வைத்தல் (Word Placement)
+   சொற்களை கட்டத்தில் வைத்தல்
    ========================================================= */
 function placeWords() {
   const sorted = [...allWords].sort((a, b) => b.length - a.length);
 
   const directions = [
-    [0, 1],   // கிடைமட்டம் வலது
-    [1, 0],   // செங்குத்து கீழ்
-    [1, 1],   // குறுக்கு கீழ்-வலது
-    [-1, 1],  // குறுக்கு மேல்-வலது
-    [0, -1],  // கிடைமட்டம் இடது
-    [-1, 0],  // செங்குத்து மேல்
+    [0, 1], [1, 0], [1, 1], [-1, 1], [0, -1], [-1, 0]
   ];
 
   for (const word of sorted) {
@@ -119,15 +113,9 @@ function canPlaceWord(word, row, col, dr, dc) {
   for (let i = 0; i < word.length; i++) {
     const r = row + dr * i;
     const c = col + dc * i;
-
-    if (r < 0 || r >= currentGridSize || c < 0 || c >= currentGridSize) {
-      return false;
-    }
-
+    if (r < 0 || r >= currentGridSize || c < 0 || c >= currentGridSize) return false;
     const existing = grid[r][c];
-    if (existing !== null && existing !== word[i]) {
-      return false;
-    }
+    if (existing !== null && existing !== word[i]) return false;
   }
   return true;
 }
@@ -144,11 +132,10 @@ function placeWordAt(word, row, col, dr, dc) {
 }
 
 /* =========================================================
-   6. காலியான இடங்களை நிரப்புதல்
+   காலியான இடங்களை நிரப்புதல்
    ========================================================= */
 function fillEmptyCells() {
   const fillChars = 'அஆஇஈஉஊஎஏஐஒஓஔகசடதபமயரலவழளறனஙஞணந'.split('');
-
   for (let r = 0; r < currentGridSize; r++) {
     for (let c = 0; c < currentGridSize; c++) {
       if (grid[r][c] === null) {
@@ -159,7 +146,7 @@ function fillEmptyCells() {
 }
 
 /* =========================================================
-   7. கட்டத்தைத் திரையில் காட்டுதல்
+   கட்டத்தைத் திரையில் காட்டுதல்
    ========================================================= */
 function renderGrid() {
   gridContainer.innerHTML = '';
@@ -180,10 +167,7 @@ function renderGrid() {
 
       cell.addEventListener('mousedown', (e) => { e.preventDefault(); onCellDown(r, c); });
       cell.addEventListener('mouseenter', () => onCellEnter(r, c));
-      cell.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        onCellDown(r, c);
-      }, { passive: false });
+      cell.addEventListener('touchstart', (e) => { e.preventDefault(); onCellDown(r, c); }, { passive: false });
       cell.addEventListener('touchmove', onTouchMove, { passive: false });
 
       gridContainer.appendChild(cell);
@@ -195,7 +179,7 @@ function renderGrid() {
 }
 
 /* =========================================================
-   8. சொல் பட்டியலைக் காட்டுதல்
+   சொல் பட்டியலைக் காட்டுதல்
    ========================================================= */
 function renderWordList() {
   wordListEl.innerHTML = '';
@@ -209,7 +193,7 @@ function renderWordList() {
 }
 
 /* =========================================================
-   9. தேர்வு லாஜிக் (Selection Logic)
+   தேர்வு லாஜிக்
    ========================================================= */
 function onCellDown(r, c) {
   isSelecting = true;
@@ -219,14 +203,12 @@ function onCellDown(r, c) {
 
 function onCellEnter(r, c) {
   if (!isSelecting) return;
-
   const last = selectedCells[selectedCells.length - 1];
   if (!last) return;
 
   const dr = r - last[0];
   const dc = c - last[1];
   if (Math.abs(dr) > 1 || Math.abs(dc) > 1) return;
-
   if (selectedCells.some(([sr, sc]) => sr === r && sc === c)) return;
 
   selectedCells.push([r, c]);
@@ -236,10 +218,8 @@ function onCellEnter(r, c) {
 function onTouchMove(e) {
   e.preventDefault();
   if (!isSelecting) return;
-
   const touch = e.touches[0];
   const el = document.elementFromPoint(touch.clientX, touch.clientY);
-
   if (el && el.classList.contains('grid-cell')) {
     const r = parseInt(el.dataset.row);
     const c = parseInt(el.dataset.col);
@@ -256,29 +236,21 @@ function onCellUp() {
 }
 
 function updateCellHighlight() {
-  document.querySelectorAll('.grid-cell').forEach(el => {
-    el.classList.remove('selected');
-  });
-
+  document.querySelectorAll('.grid-cell').forEach(el => el.classList.remove('selected'));
   selectedCells.forEach(([r, c]) => {
     const el = gridContainer.querySelector(`[data-row="${r}"][data-col="${c}"]`);
-    if (el && !el.classList.contains('found')) {
-      el.classList.add('selected');
-    }
+    if (el && !el.classList.contains('found')) el.classList.add('selected');
   });
 }
 
 /* =========================================================
-   10. தேர்வைச் சரிபார்த்தல்
+   தேர்வைச் சரிபார்த்தல்
    ========================================================= */
 function checkSelection() {
   if (selectedCells.length < 2) return;
 
   let selectedWord = '';
-  selectedCells.forEach(([r, c]) => {
-    selectedWord += grid[r][c];
-  });
-
+  selectedCells.forEach(([r, c]) => { selectedWord += grid[r][c]; });
   const reversedWord = selectedWord.split('').reverse().join('');
 
   const matched = allWords.find(w =>
@@ -310,7 +282,6 @@ function checkSelection() {
   } else if (selectedWord.length >= 2) {
     feedbackEl.textContent = `❌ தவறு. மீண்டும் முயற்சி செய்!`;
     feedbackEl.style.color = '#ff3d71';
-
     gridContainer.classList.add('shake');
     setTimeout(() => gridContainer.classList.remove('shake'), 300);
   }
@@ -319,19 +290,18 @@ function checkSelection() {
 }
 
 /* =========================================================
-   11. மதிப்பெண் புதுப்பித்தல்
+   மதிப்பெண் புதுப்பித்தல்
    ========================================================= */
 function updateScore() {
   $('score-display').textContent = `${foundWords.length} / ${allWords.length}`;
 }
 
 /* =========================================================
-   12. டைமர்
+   டைமர்
    ========================================================= */
 function startTimer() {
   startTime = Date.now();
   clearInterval(timerInterval);
-
   timerInterval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - startTime) / 1000);
     const m = Math.floor(elapsed / 60).toString().padStart(2, '0');
@@ -341,11 +311,10 @@ function startTimer() {
 }
 
 /* =========================================================
-   13. விளையாட்டு முடிவு
+   விளையாட்டு முடிவு
    ========================================================= */
 function endGame() {
   clearInterval(timerInterval);
-
   const elapsed = Math.floor((Date.now() - startTime) / 1000);
   const m = Math.floor(elapsed / 60).toString().padStart(2, '0');
   const s = (elapsed % 60).toString().padStart(2, '0');
@@ -370,36 +339,29 @@ function endGame() {
 }
 
 /* =========================================================
-   14. நிகழ்வு இணைப்புகள் (Event Listeners)
+   நிகழ்வு இணைப்புகள்
    ========================================================= */
 document.addEventListener('DOMContentLoaded', () => {
-  // கடின நிலை பொத்தான்கள்
   document.querySelectorAll('#difficulty-options button').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#difficulty-options button').forEach(b => {
-        b.classList.remove('active');
-      });
+      document.querySelectorAll('#difficulty-options button').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     });
   });
 
-  // விளையாட்டைத் தொடங்கு
   $('start-btn').addEventListener('click', startGame);
 
-  // மீண்டும் விளையாடு
   $('play-again-btn').addEventListener('click', () => {
     $('result-screen').classList.add('hidden');
     startGame();
   });
 
-  // முகப்புக்குத் திரும்பு
   $('home-btn').addEventListener('click', () => {
     $('result-screen').classList.add('hidden');
     $('home-screen').classList.remove('hidden');
     clearInterval(timerInterval);
   });
 
-  // விளையாட்டை விட்டு வெளியேறு
   $('quit-btn').addEventListener('click', () => {
     if (confirm('விளையாட்டை விட்டு வெளியேற விரும்புகிறீர்களா?')) {
       clearInterval(timerInterval);
@@ -408,7 +370,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // வெளியே கிளிக் செய்தால் தேர்வு ரத்து
   document.addEventListener('mouseup', () => {
     if (isSelecting) onCellUp();
   });
