@@ -3,18 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ஜிலேபி தமிழ் - சொல் வேட்டை</title>
+<title>தமிழ் - சொல் வேட்டை</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- ============================================ -->
-<!-- 1. முகப்புத் திரை -->
-<!-- ============================================ -->
 <div id="home-screen" class="screen">
   <div class="logo">🍥</div>
-  <h1>ஜிலேபி தமிழ்</h1>
+  <h1>தமிழ் சொல் விளையாட்டு</h1>
   <p class="subtitle">சொல் வேட்டை விளையாட்டு</p>
   <p class="subtitle">பாவாணர் 6ம் வகுப்பு தமிழ்</p>
 
@@ -46,9 +43,6 @@
   <button id="start-btn">🚀 விளையாட்டைத் தொடங்கு</button>
 </div>
 
-<!-- ============================================ -->
-<!-- 2. விளையாட்டுத் திரை -->
-<!-- ============================================ -->
 <div id="game-screen" class="screen hidden">
   <div class="game-header">
     <div class="score">⭐ <span id="score-display">0 / 0</span></div>
@@ -61,12 +55,9 @@
   <h3 style="margin-top:15px;">🔍 கண்டுபிடிக்க வேண்டிய சொற்கள்</h3>
   <div id="word-list"></div>
 
-  <div id="feedback" style="text-align:center;margin-top:10px;color:var(--jalebi-green);font-weight:bold;min-height:24px;"></div>
+  <div id="feedback" style="text-align:center;margin-top:10px;color:#2ecc71;font-weight:bold;min-height:24px;"></div>
 </div>
 
-<!-- ============================================ -->
-<!-- 3. வெற்றி திரை -->
-<!-- ============================================ -->
 <div id="result-screen" class="screen hidden">
   <div class="result-emoji" id="result-emoji">🎉</div>
   <div class="result-title" id="result-title">வெற்றி!</div>
@@ -79,9 +70,6 @@
   <button id="home-btn" class="secondary">🏠 முகப்பு</button>
 </div>
 
-<!-- ============================================ -->
-<!-- விளையாட்டு ஸ்கிரிப்ட்கள் -->
-<!-- ============================================ -->
 <script src="words.js"></script>
 <script src="script.js"></script>
 
