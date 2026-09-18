@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ஜிலேபி தமிழ் - சொல் வேட்டை</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- 1. முகப்புத் திரை -->
+<!-- ============================================ -->
+<div id="home-screen" class="screen">
+  <div class="logo">🍥</div>
+  <h1>ஜிலேபி தமிழ்</h1>
+  <p class="subtitle">சொல் வேட்டை விளையாட்டு</p>
+  <p class="subtitle">பாவாணர் 6ம் வகுப்பு தமிழ்</p>
+
+  <h3>🎯 கடினத் தன்மையைத் தேர்ந்தெடு</h3>
+  <div class="difficulty-options" id="difficulty-options">
+    <button data-size="7" class="active">😊 எளிது (7×7)</button>
+    <button data-size="8">🙂 நடுத்தரம் (8×8)</button>
+    <button data-size="9">😐 கடினம் (9×9)</button>
+    <button data-size="10">😰 மிக கடினம் (10×10)</button>
+  </div>
+
+  <h3>📖 பாடத்தைத் தேர்ந்தெடு</h3>
+  <select id="lesson-select">
+    <option value="1">இயல் 1: உயிர் எழுத்துகள்</option>
+    <option value="2">இயல் 2: மெய்யெழுத்துகள்</option>
+    <option value="3">இயல் 3: உயிர்மெய் (க-னீ)</option>
+    <option value="4">இயல் 4: உயிர்மெய் (கு-னே)</option>
+    <option value="5">இயல் 5: உயிர்மெய் (கை-கௌ)</option>
+    <option value="6">இயல் 6: நல்ல பழக்கவழக்கங்கள்</option>
+    <option value="7">இயல் 7: விலங்குகளும் பறவைகளும்</option>
+    <option value="8">இயல் 8: பூக்கள், பழங்கள், காய்கள்</option>
+    <option value="9">இயல் 9: உறவுகள்</option>
+    <option value="10">இயல் 10: நாள்கள் - மாதங்கள் - திசைகள்</option>
+    <option value="11">இயல் 11: நம் உடல்</option>
+    <option value="12">இயல் 12: தொழிலும் பயணமும்</option>
+    <option value="13">இயல் 13: வண்ணங்களும் வடிவங்களும்</option>
+  </select>
+
+  <button id="start-btn">🚀 விளையாட்டைத் தொடங்கு</button>
+</div>
+
+<!-- ============================================ -->
+<!-- 2. விளையாட்டுத் திரை -->
+<!-- ============================================ -->
+<div id="game-screen" class="screen hidden">
+  <div class="game-header">
+    <div class="score">⭐ <span id="score-display">0 / 0</span></div>
+    <div class="timer">⏱️ <span id="timer-display">00:00</span></div>
+    <button id="quit-btn" class="secondary" style="width:auto;padding:8px 15px;font-size:0.8rem;margin:0;">✖</button>
+  </div>
+
+  <div id="grid-container"></div>
+
+  <h3 style="margin-top:15px;">🔍 கண்டுபிடிக்க வேண்டிய சொற்கள்</h3>
+  <div id="word-list"></div>
+
+  <div id="feedback" style="text-align:center;margin-top:10px;color:var(--jalebi-green);font-weight:bold;min-height:24px;"></div>
+</div>
+
+<!-- ============================================ -->
+<!-- 3. வெற்றி திரை -->
+<!-- ============================================ -->
+<div id="result-screen" class="screen hidden">
+  <div class="result-emoji" id="result-emoji">🎉</div>
+  <div class="result-title" id="result-title">வெற்றி!</div>
+  <div class="result-stats">
+    <div>⏱️ நேரம்: <strong id="result-time">00:00</strong></div>
+    <div>🎯 கண்டுபிடித்தவை: <strong id="result-found">0 / 0</strong></div>
+    <div>⭐ மதிப்பெண்: <strong id="result-score">0</strong></div>
+  </div>
+  <button id="play-again-btn">🔄 மீண்டும் விளையாடு</button>
+  <button id="home-btn" class="secondary">🏠 முகப்பு</button>
+</div>
+
+<!-- ============================================ -->
+<!-- விளையாட்டு ஸ்கிரிப்ட்கள் -->
+<!-- ============================================ -->
+<script src="words.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
