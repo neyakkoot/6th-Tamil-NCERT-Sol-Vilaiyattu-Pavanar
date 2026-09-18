@@ -1,1 +1,817 @@
-11
+/* =========================================================
+   ஜிலேபி தமிழ் - சொல் வேட்டை விளையாட்டு
+   style.css - முழுமையான வடிவமைப்பு
+   ========================================================= */
+
+/* =========================================================
+   1. வண்ண மாறிகள் (Color Variables)
+   ========================================================= */
+:root {
+  /* ஜிலேபி பிரதான வண்ணங்கள் */
+  --jalebi-orange: #ff9d00;
+  --jalebi-pink: #ff3d71;
+  --jalebi-purple: #7b2cbf;
+  --jalebi-blue: #3498db;
+  --jalebi-green: #2ecc71;
+  --jalebi-red: #e74c3c;
+
+  /* பின்னணி வண்ணங்கள் */
+  --jalebi-dark: #1a1a2e;
+  --jalebi-panel: #16213e;
+  --jalebi-panel-light: #1f2a4a;
+  --jalebi-cell: #2a2a4a;
+  --jalebi-cell-hover: #3a3a5a;
+
+  /* எழுத்து வண்ணங்கள் */
+  --text-primary: #f0f0f0;
+  --text-secondary: #aaaaaa;
+  --text-muted: #666666;
+
+  /* விளிம்புகள் */
+  --border-radius-sm: 6px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 20px;
+  --border-radius-pill: 50px;
+
+  /* நிழல்கள் */
+  --shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.7);
+  --shadow-glow-orange: 0 0 20px rgba(255, 157, 0, 0.6);
+  --shadow-glow-pink: 0 0 20px rgba(255, 61, 113, 0.6);
+  --shadow-glow-green: 0 0 20px rgba(46, 204, 113, 0.6);
+
+  /* மாற்றங்கள் (Transitions) */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* =========================================================
+   2. அடிப்படை மீட்டமைப்பு (Base Reset)
+   ========================================================= */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Noto Sans Tamil', 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1626 100%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding: 10px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =========================================================
+   3. பயன்பாட்டு வகுப்புகள் (Utility Classes)
+   ========================================================= */
+.hidden {
+  display: none !important;
+}
+
+.pop-in {
+  animation: popIn 0.4s ease-out;
+}
+
+.shake {
+  animation: shake 0.3s ease-in-out;
+}
+
+/* =========================================================
+   4. தலைப்புகள் (Headings)
+   ========================================================= */
+h1, h2, h3 {
+  font-family: 'Oswald', 'Noto Sans Tamil', sans-serif;
+  text-align: center;
+  letter-spacing: 1px;
+  margin: 10px 0;
+  line-height: 1.3;
+}
+
+h1 {
+  color: var(--jalebi-orange);
+  font-size: 1.9rem;
+  text-shadow: 0 0 20px rgba(255, 157, 0, 0.5);
+}
+
+h2 {
+  color: var(--jalebi-pink);
+  font-size: 1.5rem;
+}
+
+h3 {
+  color: var(--jalebi-orange);
+  font-size: 1.1rem;
+  margin-top: 20px;
+}
+
+/* =========================================================
+   5. திரைகள் (Screens)
+   ========================================================= */
+.screen {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 25px;
+  background: linear-gradient(145deg, var(--jalebi-panel), var(--jalebi-panel-light));
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255, 157, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.screen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--jalebi-orange), var(--jalebi-pink), var(--jalebi-purple));
+}
+
+/* =========================================================
+   6. பொத்தான்கள் (Buttons)
+   ========================================================= */
+button {
+  background: linear-gradient(135deg, var(--jalebi-orange), var(--jalebi-pink));
+  color: white;
+  border: none;
+  padding: 15px 25px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: var(--border-radius-pill);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-normal);
+  font-family: 'Noto Sans Tamil', sans-serif;
+  box-shadow: 0 5px 15px rgba(255, 61, 113, 0.4);
+  width: 100%;
+  margin: 10px 0;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s, height 0.4s;
+}
+
+button:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+button:hover {
+  box-shadow: 0 8px 25px rgba(255, 61, 113, 0.6);
+  transform: translateY(-2px);
+}
+
+button:focus-visible {
+  outline: 3px solid var(--jalebi-orange);
+  outline-offset: 3px;
+}
+
+button.secondary {
+  background: linear-gradient(135deg, #4a4a6a, #2a2a4a);
+  box-shadow: var(--shadow-sm);
+}
+
+button.secondary:hover {
+  background: linear-gradient(135deg, #5a5a7a, #3a3a5a);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* =========================================================
+   7. முகப்புத் திரை (Home Screen)
+   ========================================================= */
+#home-screen .logo {
+  text-align: center;
+  font-size: 4.5rem;
+  margin-bottom: 10px;
+  animation: spin 3s linear infinite;
+  filter: drop-shadow(0 0 20px rgba(255, 157, 0, 0.7));
+}
+
+#home-screen .subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+  font-size: 0.95rem;
+}
+
+#home-screen .subtitle:first-of-type {
+  color: var(--jalebi-pink);
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin-bottom: 20px;
+}
+
+/* =========================================================
+   8. கடின நிலை தேர்வு (Difficulty Options)
+   ========================================================= */
+.difficulty-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 15px 0 25px 0;
+}
+
+.difficulty-options button {
+  background: linear-gradient(135deg, #2a2a4a, #1a1a3a);
+  border: 2px solid transparent;
+  padding: 15px 10px;
+  font-size: 0.9rem;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+}
+
+.difficulty-options button:hover {
+  border-color: var(--jalebi-orange);
+  transform: translateY(-3px);
+}
+
+.difficulty-options button.active {
+  border-color: var(--jalebi-orange);
+  background: linear-gradient(135deg, var(--jalebi-purple), var(--jalebi-blue));
+  box-shadow: var(--shadow-glow-orange);
+  transform: scale(1.02);
+}
+
+/* =========================================================
+   9. பாடத் தேர்வு (Lesson Select)
+   ========================================================= */
+#lesson-select {
+  width: 100%;
+  padding: 15px 20px;
+  background: #0f1626;
+  color: white;
+  border: 2px solid var(--jalebi-purple);
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  font-family: 'Noto Sans Tamil', sans-serif;
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff9d00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 20px;
+  padding-right: 45px;
+}
+
+#lesson-select:hover {
+  border-color: var(--jalebi-orange);
+}
+
+#lesson-select:focus {
+  outline: none;
+  border-color: var(--jalebi-orange);
+  box-shadow: 0 0 15px rgba(255, 157, 0, 0.4);
+}
+
+#lesson-select option {
+  background: #0f1626;
+  color: white;
+  padding: 10px;
+}
+
+/* =========================================================
+   10. விளையாட்டுத் தலைப்பு (Game Header)
+   ========================================================= */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding: 12px 15px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: var(--border-radius-md);
+  font-size: 0.9rem;
+  border: 1px solid rgba(255, 157, 0, 0.2);
+}
+
+.game-header .score {
+  color: var(--jalebi-orange);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.game-header .timer {
+  color: var(--jalebi-pink);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.game-header button {
+  width: auto;
+  padding: 8px 15px;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* =========================================================
+   11. எழுத்துக் கட்டம் (Word Grid)
+   ========================================================= */
+#grid-container {
+  display: grid;
+  gap: 4px;
+  margin: 15px auto;
+  max-width: 100%;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 6px;
+  border-radius: var(--border-radius-md);
+}
+
+.grid-cell {
+  background: linear-gradient(145deg, var(--jalebi-cell), #1f1f3a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  color: var(--text-primary);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  aspect-ratio: 1 / 1;
+  font-size: 1.05rem;
+  user-select: none;
+  -webkit-user-select: none;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+
+.grid-cell:hover:not(.found) {
+  background: linear-gradient(145deg, var(--jalebi-cell-hover), #2a2a5a);
+  transform: scale(1.03);
+}
+
+.grid-cell.selected {
+  background: linear-gradient(135deg, var(--jalebi-orange), var(--jalebi-pink));
+  color: white;
+  transform: scale(1.08);
+  box-shadow: var(--shadow-glow-orange);
+  z-index: 2;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.grid-cell.found {
+  background: linear-gradient(135deg, var(--jalebi-green), #1abc9c);
+  color: white;
+  box-shadow: var(--shadow-glow-green);
+  cursor: default;
+  border-color: rgba(255, 255, 255, 0.3);
+  animation: foundPulse 0.5s ease-out;
+}
+
+.grid-cell.found::after {
+  content: '✓';
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 0.65rem;
+  opacity: 0.8;
+}
+
+/* =========================================================
+   12. சொல் பட்டியல் (Word List)
+   ========================================================= */
+#word-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 10px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: var(--border-radius-md);
+  min-height: 70px;
+  border: 1px solid rgba(255, 157, 0, 0.15);
+}
+
+.word-chip {
+  padding: 8px 14px;
+  background: linear-gradient(145deg, #2a2a4a, #1f1f3a);
+  border: 2px solid var(--jalebi-purple);
+  border-radius: var(--border-radius-pill);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all var(--transition-normal);
+  color: var(--text-primary);
+  cursor: default;
+  user-select: none;
+}
+
+.word-chip:hover {
+  transform: translateY(-2px);
+  border-color: var(--jalebi-orange);
+  box-shadow: 0 4px 12px rgba(255, 157, 0, 0.3);
+}
+
+.word-chip.found {
+  background: linear-gradient(135deg, var(--jalebi-green), #1abc9c);
+  border-color: var(--jalebi-green);
+  text-decoration: line-through;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: var(--shadow-glow-green);
+  opacity: 0.85;
+}
+
+/* =========================================================
+   13. பின்னூட்டம் (Feedback Message)
+   ========================================================= */
+#feedback {
+  text-align: center;
+  margin-top: 12px;
+  font-weight: 700;
+  min-height: 24px;
+  font-size: 0.95rem;
+  transition: all var(--transition-normal);
+  padding: 6px;
+  border-radius: var(--border-radius-sm);
+}
+
+#feedback:not(:empty) {
+  background: rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* =========================================================
+   14. வெற்றி திரை (Result Screen)
+   ========================================================= */
+#result-screen {
+  text-align: center;
+  animation: popIn 0.5s ease-out;
+}
+
+.result-emoji {
+  font-size: 5rem;
+  margin: 20px 0;
+  animation: bounceIn 0.8s ease-out;
+  filter: drop-shadow(0 0 25px rgba(255, 157, 0, 0.6));
+}
+
+.result-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.9rem;
+  color: var(--jalebi-orange);
+  margin: 15px 0 25px 0;
+  text-shadow: 0 0 25px rgba(255, 157, 0, 0.6);
+  letter-spacing: 1px;
+}
+
+.result-stats {
+  background: rgba(0, 0, 0, 0.35);
+  padding: 25px;
+  border-radius: var(--border-radius-md);
+  margin: 20px 0;
+  border: 1px solid rgba(255, 157, 0, 0.2);
+  text-align: left;
+}
+
+.result-stats > div {
+  margin: 12px 0;
+  font-size: 1.05rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.result-stats > div:last-child {
+  border-bottom: none;
+}
+
+.result-stats strong {
+  color: var(--jalebi-orange);
+  font-size: 1.15rem;
+}
+
+#play-again-btn {
+  margin-top: 10px;
+}
+
+/* =========================================================
+   15. அனிமேஷன்கள் (Animations)
+   ========================================================= */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+@keyframes foundPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.8);
+  }
+  50% {
+    transform: scale(1.12);
+    box-shadow: 0 0 0 15px rgba(46, 204, 113, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   16. மொபைல் சிறிய திரை (Mobile Responsive)
+   ========================================================= */
+@media (max-width: 480px) {
+  body {
+    padding: 6px;
+  }
+
+  .screen {
+    padding: 15px;
+    margin: 10px auto;
+    border-radius: var(--border-radius-md);
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  h3 {
+    font-size: 1rem;
+  }
+
+  #home-screen .logo {
+    font-size: 3.5rem;
+  }
+
+  #home-screen .subtitle {
+    font-size: 0.85rem;
+  }
+
+  .difficulty-options {
+    gap: 8px;
+  }
+
+  .difficulty-options button {
+    padding: 12px 8px;
+    font-size: 0.8rem;
+  }
+
+  button {
+    padding: 13px 20px;
+    font-size: 0.95rem;
+  }
+
+  #grid-container {
+    gap: 3px;
+    padding: 4px;
+  }
+
+  .grid-cell {
+    font-size: 0.9rem;
+    border-radius: 4px;
+  }
+
+  .grid-cell.found::after {
+    font-size: 0.55rem;
+    top: 1px;
+    right: 2px;
+  }
+
+  .word-chip {
+    padding: 6px 11px;
+    font-size: 0.78rem;
+  }
+
+  .game-header {
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+
+  .game-header button {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+
+  .result-emoji {
+    font-size: 3.5rem;
+  }
+
+  .result-title {
+    font-size: 1.4rem;
+  }
+
+  .result-stats {
+    padding: 18px;
+  }
+
+  .result-stats > div {
+    font-size: 0.95rem;
+  }
+}
+
+/* =========================================================
+   17. சிறிய உயரம் கொண்ட திரை (Landscape Mobile)
+   ========================================================= */
+@media (max-height: 600px) and (orientation: landscape) {
+  .screen {
+    margin: 10px auto;
+    padding: 15px;
+  }
+
+  #home-screen .logo {
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+  }
+
+  h1 {
+    font-size: 1.3rem;
+  }
+
+  .difficulty-options {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .difficulty-options button {
+    padding: 10px 5px;
+    font-size: 0.75rem;
+  }
+}
+
+/* =========================================================
+   18. அச்சு பாணி (Print - தேவைப்பட்டால்)
+   ========================================================= */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+
+  .screen {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  button {
+    display: none;
+  }
+}
+
+/* =========================================================
+   19. அணுகல்தன்மை (Accessibility)
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* உயர் மாறுபாடு பயன்முறை (High Contrast Mode) */
+@media (prefers-contrast: high) {
+  :root {
+    --text-primary: #ffffff;
+    --text-secondary: #dddddd;
+    --jalebi-cell: #000000;
+    --jalebi-panel: #000000;
+  }
+
+  .grid-cell {
+    border: 2px solid #ffffff;
+  }
+
+  button {
+    border: 2px solid #ffffff;
+  }
+}
+
+/* இருண்ட பயன்முறை (Dark Mode - ஏற்கனவே இருண்டது) */
+@media (prefers-color-scheme: light) {
+  body {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  }
+}
+
+/* =========================================================
+   20. தேர்வு வண்ணம் (Selection Color)
+   ========================================================= */
+::selection {
+  background: var(--jalebi-orange);
+  color: white;
+}
+
+::-moz-selection {
+  background: var(--jalebi-orange);
+  color: white;
+}
+
+/* =========================================================
+   21. ஸ்க்ரோல்பார் வடிவமைப்பு (Scrollbar Styling)
+   ========================================================= */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--jalebi-panel);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--jalebi-orange), var(--jalebi-pink));
+  border-radius: var(--border-radius-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(var(--jalebi-pink), var(--jalebi-purple));
+}
